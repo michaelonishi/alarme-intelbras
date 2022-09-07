@@ -90,6 +90,14 @@ para acesso via app AMT Mobile. Deve ser um número.
 
 ``maxconn`` - número máximo de centrais conectadas e identificadas. Uma vez atingido esse número, conexões novas não são tratadas e acabam fechando por timeout.
 
+``mqtt_enabled``- habilita ou desabilita a notificação por eventos mqtt. Valor padrão é `false`
+
+``mqtt_broker`` - endereço do servidor mqtt
+
+``mqtt_port`` - porta do servidor mqtt. Valor padrão é `1883`.
+
+``mqtt_base_topic`` - tópico pai de todos os eventos mqtt que serão transmitidos
+
 ## Mais sobre as configurações de callback
 
 Todos os parâmetros são obrigatórios e devem ser sintaticamente corretos,
@@ -170,7 +178,18 @@ Se você deseja compartilhar as mensagens e fotos de disparo de alarme através
 de algum serviço (email, SMS, WhatsApp, etc.) faça-o através dos
 scripts-gancho (`gancho_msg` e `gancho_arquivo`).
 
-O script `gancho_msg` recebe e encaminha as mensagens de eventos.
+O script `gancho_msg` recebe e encaminha as mensagens de eventos. As mensagens de evento também serão enviadas via mensagens MQTT, caso habilitado. Serão enviadas mensagens no tópico `<mqtt_base_topic>/<codigo_do_evento>` no formato json conforme seguinte exemplo:
+
+```json
+{
+    'codigo': 461,
+    'qualificador': 1,
+    'particao': 0,
+    'zona': 1
+}
+```
+
+Essas informações são apenas repassadas de acordo com o protocolo Contact ID.
 
 O script `gancho_arquivo` recebe e encaminha arquivos, mais especificamente
 as fotos capturadas pelo sensor IVP 8000 Pet Cam, se ele existir na sua

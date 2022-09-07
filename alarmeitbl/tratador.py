@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 
 import datetime, os, shlex
+from typing import Optional
 
-from .myeventloop.tcpserver import *
-from .utils_proto import *
+from alarmeitbl.eventos import GerenciadorEventos
+
+from .myeventloop.tcpserver import TCPServerHandler
+from .utils_proto import UtilsProtocolo
 
 class Tratador(TCPServerHandler, UtilsProtocolo):
+    gerenciador_eventos: Optional[GerenciadorEventos] = None
     backoff_minimo = 0.125
     recuo_backoff_minimo = 1.0 # Deve ser bem maior que RTT esperado
 
@@ -348,6 +352,15 @@ class Tratador(TCPServerHandler, UtilsProtocolo):
                     fotos = "(com fotos, i=%d n=%d)" % (indice, nr_fotos)
                 descricao_humana = scodigo.format(zona=zona, particao=particao)
                 self.log_info(descricao_humana, fotos)
+
+                mensagem = {
+                    'codigo': codigo,
+                    'qualificador': qualificador,
+                    'particao': particao,
+                    'zona': zona
+                }
+                if Tratador.gerenciador_eventos is not None:
+                    Tratador.gerenciador_eventos.publish(message=mensagem, topic=str(codigo))
                 self.msg_para_gancho(descricao_humana, fotos)
 
                 if com_foto:

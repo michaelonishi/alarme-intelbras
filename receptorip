@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
 import sys, os, configparser, re
+from alarmeitbl.eventos import GerenciadorEventos
 
-from alarmeitbl.myeventloop import Timeout, Log
-from alarmeitbl.tratador import *
-from alarmeitbl.tratador_fotos import *
+from alarmeitbl.myeventloop import Handler, Timeout, Log
+from alarmeitbl.myeventloop.tcpserver import TCPListener, TCPServerEventLoop
+from alarmeitbl.tratador import Tratador
+from alarmeitbl.tratador_fotos import TratadorDeFotos
 
 def usage():
     print("Modo de usar: %s <arquivo de configuração>" % sys.argv[0])
     sys.exit(1)
 
-def parse_config():
+def parse_config() -> configparser.SectionProxy:
     if len(sys.argv) < 2:
         usage()
 
@@ -41,6 +43,12 @@ senha = int(config['senha'])
 tam_senha = int(config['tamanho'])
 centrais = re.compile("" + config['centrais'])
 maxconn = int(config['maxconn'])
+mqtt_enabled = config.getboolean('mqtt_enabled', False)
+if mqtt_enabled:
+    mqtt_broker = config['mqtt_broker']
+    mqtt_port = config.getint('mqtt_port', 1883)
+    mqtt_base_topic = config['mqtt_base_topic']
+    Tratador.gerenciador_eventos = GerenciadorEventos(mqtt_broker=mqtt_broker, mqtt_port=mqtt_port, base_topic=mqtt_base_topic)
 
 Tratador.tratador_de_fotos = TratadorDeFotos('receptorip', caddr, cport, senha, tam_senha)
 
