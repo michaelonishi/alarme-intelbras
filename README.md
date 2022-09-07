@@ -182,10 +182,10 @@ O script `gancho_msg` recebe e encaminha as mensagens de eventos. As mensagens d
 
 ```json
 {
-    'codigo': 461,
-    'qualificador': 1,
-    'particao': 0,
-    'zona': 1
+    "codigo": 461,
+    "qualificador": 1,
+    "particao": 0,
+    "zona": 1
 }
 ```
 
