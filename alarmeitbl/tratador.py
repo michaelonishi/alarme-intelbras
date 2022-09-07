@@ -353,13 +353,13 @@ class Tratador(TCPServerHandler, UtilsProtocolo):
                 descricao_humana = scodigo.format(zona=zona, particao=particao)
                 self.log_info(descricao_humana, fotos)
 
-                mensagem = {
-                    'codigo': codigo,
-                    'qualificador': qualificador,
-                    'particao': particao,
-                    'zona': zona
-                }
                 if Tratador.gerenciador_eventos is not None:
+                    mensagem = {
+                        'codigo': codigo,
+                        'qualificador': qualificador,
+                        'particao': particao,
+                        'zona': zona
+                    }
                     Tratador.gerenciador_eventos.publish(message=mensagem, topic=str(codigo))
                 self.msg_para_gancho(descricao_humana, fotos)
 
