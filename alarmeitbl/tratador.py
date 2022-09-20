@@ -301,9 +301,13 @@ class Tratador(TCPServerHandler, UtilsProtocolo):
         resposta = [ 0x80, self.bcd(agora.year - 2000), self.bcd(agora.month), self.bcd(agora.day), \
             self.bcd(dow), self.bcd(agora.hour), self.bcd(agora.minute), self.bcd(agora.second) ]
         self.envia_longo(resposta)
+    
+    @staticmethod
+    def get_data_hora() -> str:
+        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def msg_para_gancho(self, *msg):
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = Tratador.get_data_hora()
         msgw = now
         for item in msg:
             msgw += " "
@@ -355,6 +359,7 @@ class Tratador(TCPServerHandler, UtilsProtocolo):
 
                 if Tratador.gerenciador_eventos is not None:
                     mensagem = {
+                        'data_hora': Tratador.get_data_hora(),
                         'codigo': codigo,
                         'qualificador': qualificador,
                         'particao': particao,
