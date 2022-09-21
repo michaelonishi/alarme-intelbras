@@ -285,7 +285,6 @@ class Tratador(TCPServerHandler, UtilsProtocolo):
 
             self.central_identificada = True
 
-            self.central_identificada = True
             if self.to_ident:
                 self.to_ident.cancel()
                 self.to_ident = None
